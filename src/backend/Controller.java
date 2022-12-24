@@ -6,13 +6,21 @@ import java.util.concurrent.TimeUnit;
 
 public class Controller {
 
-    private Character movementKey = 'W';
-    private Character focusKey = 'X';
+    private final Character movementKey;
+    private final Character focusKey;
+    private final int keyPressedDuration; //in milliseconds
+    private final int cooldownDuration; //in milliseconds
+    private final int framesPerSecond;
+    private final int amountFrames;
 
-    private int keyPressedDuration = 20; //in ms (20ms recommended for FH5)
-    private int cooldownDuration = 3000; //in ms
-    private int framesPerSecond = 25;
-    private int amountFrames = 50;
+    public Controller(Character movementKey, Character focusKey, int keyPressedDuration, int cooldownDuration, int framesPerSecond, int videoLength) {
+        this.movementKey = movementKey;
+        this.focusKey = focusKey;
+        this.keyPressedDuration = keyPressedDuration;
+        this. cooldownDuration = cooldownDuration;
+        this.framesPerSecond = framesPerSecond;
+        this.amountFrames = videoLength * framesPerSecond;
+    }
 
     public void run() throws AWTException {
         Camera camera = new Camera();
