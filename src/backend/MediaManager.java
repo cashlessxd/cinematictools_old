@@ -6,6 +6,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class MediaManager {
@@ -22,6 +24,7 @@ public class MediaManager {
     }
 
     public void mergeFramesToVideo(int framesPerSecond) throws IOException {
+        Files.createDirectories(Paths.get("result"));
         File video = new File("result/clip.mp4");
         AWTSequenceEncoder encoder = AWTSequenceEncoder.createSequenceEncoder(video, framesPerSecond);
 
