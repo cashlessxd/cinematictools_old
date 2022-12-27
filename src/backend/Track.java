@@ -14,7 +14,7 @@ public class Track {
     final private int coolDownDuration;
     final private int movementLength;
     final private int framesPerSecond;
-    final private int amountFrames;
+    final private int videoLength;
     final private String virtualControllerDirPath;
 
     public Track(int leftStickX , int leftStickY , int rightStickX , int rightStickY, char focusKey, int framesPerSecond, int coolDownDuration, int movementLength, int videoLength, String virtualControllerDirPath) {
@@ -26,7 +26,7 @@ public class Track {
         this.coolDownDuration = coolDownDuration;
         this.framesPerSecond = framesPerSecond;
         this.movementLength = movementLength;
-        this.amountFrames = videoLength * framesPerSecond;
+        this.videoLength = videoLength;
         this.virtualControllerDirPath = virtualControllerDirPath;
     }
 
@@ -38,21 +38,39 @@ public class Track {
 
         vcm.initialize(virtualKeyboard);
 
-        try {
-            for (int i = 0; i < amountFrames; i++) {
-                camera.move(leftStickX, leftStickY, rightStickX, rightStickY, movementLength);
-                camera.focus(focusKey);
-                TimeUnit.MILLISECONDS.sleep(coolDownDuration);
-                mediaManager.createScreenCapture();
-            }
+        doTestRun(camera);
 
-            mediaManager.mergeFramesToVideo(framesPerSecond);
-
-        } catch (InterruptedException | IOException e) {
-            e.printStackTrace();
-        }
+        createVideo(camera, mediaManager);
 
         vcm.kill();
+    }
+
+    public void doTestRun(Camera camera) throws InterruptedException {
+        camera.moveSticks(leftStickX, leftStickY, rightStickX, rightStickY, movementLength);
+        TimeUnit.SECONDS.sleep(videoLength);
+        camera.resetSticks();
+        camera.moveSticks(invertStickPos(leftStickX), invertStickPos(leftStickY), invertStickPos(rightStickX), invertStickPos(rightStickY), movementLength);
+        TimeUnit.SECONDS.sleep(videoLength);
+        camera.resetSticks();
+    }
+
+    public void createVideo(Camera camera, MediaManager mediaManager) throws InterruptedException, IOException {
+        int amountFrames = videoLength * framesPerSecond;
+        for (int i = 0; i < amountFrames; i++) {
+            camera.moveSticks(leftStickX, leftStickY, rightStickX, rightStickY, movementLength);
+            TimeUnit.MILLISECONDS.sleep(movementLength);
+            camera.resetSticks();
+            camera.focus(focusKey);
+            TimeUnit.MILLISECONDS.sleep(coolDownDuration);
+            mediaManager.createScreenCapture();
+        }
+
+        mediaManager.mergeFramesToVideo(framesPerSecond);
+    }
+
+    public int invertStickPos(int pos) {
+        int offset = pos - 50;
+        return 50 - offset;
     }
 }
 

@@ -1,7 +1,6 @@
 package backend;
 
 import java.awt.*;
-import java.util.concurrent.TimeUnit;
 
 public class Camera {
 
@@ -13,10 +12,12 @@ public class Camera {
         this.vcm = vcm;
     }
 
-    public void move(int leftStickX ,int leftStickY ,int rightStickX ,int rightStickY, int movementLength) throws InterruptedException {
+    public void moveSticks(int leftStickX , int leftStickY , int rightStickX , int rightStickY, int movementLength) throws InterruptedException {
         vcm.moveLeftStick(virtualKeyboard, leftStickX, leftStickY);
         vcm.moveRightStick(virtualKeyboard, rightStickX, rightStickY);
-        TimeUnit.MILLISECONDS.sleep(movementLength);
+    }
+
+    public void resetSticks() {
         vcm.resetLeftStick(virtualKeyboard);
         vcm.resetRightStick(virtualKeyboard);
     }
