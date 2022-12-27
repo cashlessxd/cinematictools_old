@@ -12,14 +12,17 @@ import java.util.ArrayList;
 
 public class MediaManager {
 
-    private ArrayList<BufferedImage> frames;
+    final private Robot virtualKeyboard;
 
-    public MediaManager() {
-        frames = new ArrayList<>();
+    final private ArrayList<BufferedImage> frames;
+
+    public MediaManager(Robot virtualKeyboard) {
+        this.virtualKeyboard = virtualKeyboard;
+        this.frames = new ArrayList<>();
     }
 
-    public void createScreenCapture(Robot robot, int frameNumber) {
-        BufferedImage image = robot.createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
+    public void createScreenCapture() {
+        BufferedImage image = virtualKeyboard.createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
         frames.add(image);
     }
 

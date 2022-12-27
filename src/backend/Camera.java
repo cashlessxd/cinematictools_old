@@ -1,19 +1,28 @@
 package backend;
 
 import java.awt.*;
+import java.util.concurrent.TimeUnit;
 
 public class Camera {
 
-    public void move(Robot robot, Character movementKey, int keyPressedDuration, int frameNumber) {
-        robot.keyPress(movementKey);
-        robot.delay(keyPressedDuration);
-        robot.keyRelease(movementKey);
-        System.out.println("moved camera in frame: " + (frameNumber));
+    final private Robot virtualKeyboard;
+    final private VirtualControllerManager vcm;
+
+    public Camera(Robot virtualKeyboard, VirtualControllerManager vcm) {
+        this.virtualKeyboard = virtualKeyboard;
+        this.vcm = vcm;
     }
 
-    public void focus(Robot robot, Character focusKey, int frameNumber) {
-        robot.keyPress(focusKey);
-        robot.keyRelease(focusKey);
-        System.out.println("focused camera in frame: " + (frameNumber));
+    public void move(int leftStickX ,int leftStickY ,int rightStickX ,int rightStickY, int movementLength) throws InterruptedException {
+        vcm.moveLeftStick(virtualKeyboard, leftStickX, leftStickY);
+        vcm.moveRightStick(virtualKeyboard, rightStickX, rightStickY);
+        TimeUnit.MILLISECONDS.sleep(movementLength);
+        vcm.resetLeftStick(virtualKeyboard);
+        vcm.resetRightStick(virtualKeyboard);
+    }
+
+    public void focus(Character focusKey) {
+        virtualKeyboard.keyPress(focusKey);
+        virtualKeyboard.keyRelease(focusKey);
     }
 }
