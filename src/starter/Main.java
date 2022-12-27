@@ -21,9 +21,13 @@ public class Main {
         int framesPerSecond = 25;
         int videoLength = 1; //in seconds
 
+        boolean testRunEnabled = true; //not 100% accurate
+        boolean returnToStartEnabled = true; //not 100% accurate
+        boolean refocusEnabled = false;
+
         String virtualControllerDirPath = "C:\\Program Files\\Virtual Controller";
 
-        Track track = new Track(leftStickX ,leftStickY ,rightStickX ,rightStickY, focusKey, framesPerSecond, coolDownDuration, movementLength, videoLength, virtualControllerDirPath);
+        Track track = new Track(leftStickX, leftStickY, rightStickX, rightStickY, focusKey, framesPerSecond, coolDownDuration, movementLength, videoLength, testRunEnabled, returnToStartEnabled, refocusEnabled, virtualControllerDirPath);
         track.run();
     }
 }

@@ -12,7 +12,7 @@ public class Camera {
         this.vcm = vcm;
     }
 
-    public void moveSticks(int leftStickX , int leftStickY , int rightStickX , int rightStickY, int movementLength) throws InterruptedException {
+    public void moveSticks(int leftStickX , int leftStickY , int rightStickX , int rightStickY) throws InterruptedException {
         vcm.moveLeftStick(virtualKeyboard, leftStickX, leftStickY);
         vcm.moveRightStick(virtualKeyboard, rightStickX, rightStickY);
     }

@@ -15,9 +15,12 @@ public class Track {
     final private int movementLength;
     final private int framesPerSecond;
     final private int videoLength;
+    final private boolean testRunEnabled;
+    final private boolean returnToStartEnabled;
+    final private boolean refocusEnabled;
     final private String virtualControllerDirPath;
 
-    public Track(int leftStickX , int leftStickY , int rightStickX , int rightStickY, char focusKey, int framesPerSecond, int coolDownDuration, int movementLength, int videoLength, String virtualControllerDirPath) {
+    public Track(int leftStickX, int leftStickY, int rightStickX, int rightStickY, char focusKey, int framesPerSecond, int coolDownDuration, int movementLength, int videoLength, boolean testRunEnabled, boolean returnToStartEnabled, boolean refocusEnabled, String virtualControllerDirPath) {
         this.leftStickX = leftStickX;
         this.leftStickY = leftStickY;
         this.rightStickX = rightStickX;
@@ -27,6 +30,9 @@ public class Track {
         this.framesPerSecond = framesPerSecond;
         this.movementLength = movementLength;
         this.videoLength = videoLength;
+        this.testRunEnabled = testRunEnabled;
+        this.returnToStartEnabled = returnToStartEnabled;
+        this.refocusEnabled = refocusEnabled;
         this.virtualControllerDirPath = virtualControllerDirPath;
     }
 
@@ -37,35 +43,59 @@ public class Track {
         MediaManager mediaManager = new MediaManager(virtualKeyboard);
 
         vcm.initialize(virtualKeyboard);
-
-        doTestRun(camera);
-
         createVideo(camera, mediaManager);
-
         vcm.kill();
-    }
-
-    public void doTestRun(Camera camera) throws InterruptedException {
-        camera.moveSticks(leftStickX, leftStickY, rightStickX, rightStickY, movementLength);
-        TimeUnit.SECONDS.sleep(videoLength);
-        camera.resetSticks();
-        camera.moveSticks(invertStickPos(leftStickX), invertStickPos(leftStickY), invertStickPos(rightStickX), invertStickPos(rightStickY), movementLength);
-        TimeUnit.SECONDS.sleep(videoLength);
-        camera.resetSticks();
     }
 
     public void createVideo(Camera camera, MediaManager mediaManager) throws InterruptedException, IOException {
         int amountFrames = videoLength * framesPerSecond;
+
+        if (testRunEnabled) {
+            doTestRun(camera, amountFrames);
+        }
+
         for (int i = 0; i < amountFrames; i++) {
-            camera.moveSticks(leftStickX, leftStickY, rightStickX, rightStickY, movementLength);
+
+            camera.moveSticks(leftStickX, leftStickY, rightStickX, rightStickY);
             TimeUnit.MILLISECONDS.sleep(movementLength);
             camera.resetSticks();
-            camera.focus(focusKey);
+
+            if (refocusEnabled) {
+                camera.focus(focusKey);
+            }
+
             TimeUnit.MILLISECONDS.sleep(coolDownDuration);
+
             mediaManager.createScreenCapture();
         }
 
+        if (returnToStartEnabled) {
+            returnToStart(camera, amountFrames);
+        }
+
         mediaManager.mergeFramesToVideo(framesPerSecond);
+    }
+
+    public void doTestRun(Camera camera, int amountFrames) throws InterruptedException {
+        for (int i = 0; i < amountFrames; i++) {
+            camera.moveSticks(leftStickX, leftStickY, rightStickX, rightStickY);
+            TimeUnit.MILLISECONDS.sleep(movementLength);
+            camera.resetSticks();
+        }
+
+        for (int i = 0; i < amountFrames; i++) {
+            camera.moveSticks(invertStickPos(leftStickX), invertStickPos(leftStickY), invertStickPos(rightStickX), invertStickPos(rightStickY));
+            TimeUnit.MILLISECONDS.sleep(movementLength);
+            camera.resetSticks();
+        }
+    }
+
+    public void returnToStart(Camera camera, int amountFrames) throws InterruptedException {
+        for (int i = 0; i < amountFrames; i++) {
+            camera.moveSticks(invertStickPos(leftStickX), invertStickPos(leftStickY), invertStickPos(rightStickX), invertStickPos(rightStickY));
+            TimeUnit.MILLISECONDS.sleep(movementLength);
+            camera.resetSticks();
+        }
     }
 
     public int invertStickPos(int pos) {
