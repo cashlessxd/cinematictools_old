@@ -30,7 +30,7 @@ public class FrameBuffer {
     }
 
 
-    public void add( BufferedImage frame ) {
+    public void add( Image frame ) {
         frames.add( createBufferedImage( frame ) );
         if ( frames.size() == FRAME_COUNT ) {
             flush();
