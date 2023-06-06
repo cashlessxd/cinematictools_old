@@ -11,7 +11,7 @@ public class ScreenRecorder {
 
     Rectangle screenRegion;
     Robot robot;
-    double screenHight;
+    double screenHeight;
     double screenWidth;
     FrameBuffer frameBuffer;
 
@@ -21,8 +21,8 @@ public class ScreenRecorder {
 
         GraphicsDevice defaultScreen = getDefaultScreen();
         this.robot = new Robot( defaultScreen );
-        this.screenHight = defaultScreen.getDisplayMode().getHeight();
-        this.screenWidth = defaultScreen.getDisplayMode().getWidth();
+        this.screenHeight = getScreenHeight( defaultScreen );
+        this.screenWidth = getScreenWidth( defaultScreen );
 
         this.screenRegion = new Rectangle( Toolkit.getDefaultToolkit().getScreenSize() );
     }
@@ -32,10 +32,16 @@ public class ScreenRecorder {
         return GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
     }
 
+    private double getScreenHeight(GraphicsDevice screen) {
+        return screen.getDisplayMode().getHeight();
+    }
+
+    private double getScreenWidth(GraphicsDevice screen) {
+        return screen.getDisplayMode().getWidth();
+    }
+
 
     public void captureAndAddFrame() {
-
-        frameBuffer.add();
     }
 
 }
