@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 
 public class FrameWriter implements Runnable {
 
+    private static final String DIRECTORY_NAME = "framedump";
     private static final String FILE_NAME = "frame";
     private static final String IMAGE_FORMAT = "png";
     private final Path dumpDirectory;
@@ -50,7 +51,7 @@ public class FrameWriter implements Runnable {
 
 
     private Path getWorkingDirectory() {
-        return Paths.get( System.getProperty( "user.dir" ) );
+        return Paths.get( System.getProperty( "user.dir" ) + System.getProperty( "file.separator" ) + DIRECTORY_NAME );
     }
 
 
