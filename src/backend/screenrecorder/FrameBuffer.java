@@ -3,6 +3,7 @@ package backend.screenrecorder;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -19,8 +20,11 @@ public class FrameBuffer {
 
     private List<BufferedImage> frames;
 
+    private final Path dumpDirectory;
 
-    public FrameBuffer() {
+
+    public FrameBuffer( Path dumpDirectory ) {
+        this.dumpDirectory = dumpDirectory;
         this.batchCounter = new AtomicInteger();
         this.frames = new LinkedList<>();
     }
@@ -36,7 +40,7 @@ public class FrameBuffer {
 
     public void flush() {
         int offset = batchCounter.getAndIncrement() * FRAME_COUNT;
-        FrameWriter frameWriter = new FrameWriter( frames, offset );
+        FrameWriter frameWriter = new FrameWriter( frames, offset, dumpDirectory );
         Thread thread = new Thread( frameWriter );
         thread.start();
         frames = new LinkedList<>();

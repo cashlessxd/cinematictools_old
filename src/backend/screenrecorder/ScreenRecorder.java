@@ -7,9 +7,13 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class ScreenRecorder {
 
+    private static final String DUMP_DIRECTORY_NAME = "framedump";
+    private final Path dumpDirectory;
     private final Rectangle screenRegion;
     private Robot robot;
     private double screenHeight;
@@ -18,7 +22,8 @@ public class ScreenRecorder {
 
 
     public ScreenRecorder() throws AWTException {
-        this.frameBuffer = new FrameBuffer();
+        this.dumpDirectory = getDumpDirectory();
+        this.frameBuffer = new FrameBuffer( dumpDirectory );
         GraphicsDevice defaultScreen = getDefaultScreen();
         this.robot = new Robot( defaultScreen );
         setScreenDimensions( defaultScreen );
@@ -41,6 +46,11 @@ public class ScreenRecorder {
         Image frame = robot.createMultiResolutionScreenCapture( screenRegion )
                 .getResolutionVariant( screenWidth, screenHeight );
         frameBuffer.add( frame );
+    }
+
+
+    private Path getDumpDirectory() {
+        return Paths.get( System.getProperty( "user.dir" ) + System.getProperty( "file.separator" ) + DUMP_DIRECTORY_NAME );
     }
 
 }
