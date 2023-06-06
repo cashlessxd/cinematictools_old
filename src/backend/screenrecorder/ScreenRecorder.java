@@ -28,7 +28,7 @@ public class ScreenRecorder {
     }
 
 
-    public GraphicsDevice getDefaultScreen() {
+    private GraphicsDevice getDefaultScreen() {
         return GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
     }
 
